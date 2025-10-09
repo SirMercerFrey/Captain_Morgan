@@ -153,7 +153,7 @@ char	*ft_strdup(const char *s)
 
 int		main(void)
 {
-	const char	*orig[] = {"\"echo\"", "ab\"cd\"'ef'\", 'Je suis une ''*'\"", "'>'", "\"outfile.txt\"", NULL};
+	const char	*orig[] = {"\"echo\"", "ab\"cd\"'ef'", 'Je suis une ''*'\"", "'>'", "\"outfile.txt\"", NULL};
 	char	*token[10];
 
 	size_t	i = 0;
