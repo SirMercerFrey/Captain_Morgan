@@ -1,9 +1,10 @@
+#include "minishell.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 
-typedef struct	s_cmd
+/*typedef struct	s_cmd
 {
 	char			**argv;
 	char			*infile;
@@ -17,7 +18,7 @@ typedef struct s_cap
 {
 	int				tok;
 	struct s_cmd	*next;
-} t_cap;
+} t_cap;*/
 
 t_cmd	*create_node(void)
 {
@@ -47,7 +48,7 @@ t_cap	*create_head(void)
 	return (new_head);
 }
 
-int		ft_strcmp(char *s1, char *s2)
+static int		ft_strcmp(char *s1, char *s2)
 {
 	while (*s1 && (*s1 == *s2))
 	{
@@ -57,7 +58,7 @@ int		ft_strcmp(char *s1, char *s2)
 	return ((unsigned char)*s1 - (unsigned char)*s2);
 }
 
-char	*ft_strdup(const char *s)
+static char	*ft_strdup(const char *s)
 {
 	char	*dup;
 	int		len;
@@ -175,7 +176,7 @@ void	free_head_nodes(t_cap *head)
 	
 		
 
-int		main(void)
+/*int		main(void)
 {
 //	char	*token[] = {"echo", "-n", "\"Je suis\"", "une legende", ">>", "file.txt", NULL};
 	char	*token[] = {"ls", "-A", "|", "grep", "'user'", NULL};
@@ -202,4 +203,4 @@ int		main(void)
 	}
 	free_head_nodes(head);
 	return (0);
-}
+}*/

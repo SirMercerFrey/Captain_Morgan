@@ -1,21 +1,22 @@
+#include "minishell.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <readline/readline.h>
 #define TOK_MAX 128
 
-int		metachars(char c)
+static int		metachars(char c)
 {
 	return (c == '|' || c == '<' || c == '>');
 }
 
-int		quotes(char c)
+static int		quotes(char c)
 {
 	return (c == '\'' || c == '"');
 }
 
 
-int		spaces(char c)
+static int		spaces(char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n');
 }
@@ -103,7 +104,7 @@ char	**split_tokens(char *line)
 	return (token);
 }
 
-int		main(void)
+/*int		main(void)
 {
 	char	*line;
 	line = readline("Prompt >");
@@ -116,4 +117,4 @@ int		main(void)
 	free_tokens(token, i - 1);
 	free(origin);
 	return (0);
-}	
+}*/	

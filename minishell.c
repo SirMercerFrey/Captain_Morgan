@@ -1,10 +1,11 @@
+#include "minishell.h"
 #include <unistd.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
-void	write_prompt(void)
+/*void	write_prompt(void)
 {
 	char	cwd[PATH_MAX];
 
@@ -15,11 +16,55 @@ void	write_prompt(void)
 	}
 	else
 		write(1, "unknown > ", 10);
+}*/
+
+void write_prompt(void)
+{
+    char cwd[PATH_MAX];
+
+    if (getcwd(cwd, sizeof(cwd)) != NULL)
+    {
+        printf("%s > ", cwd);
+    }
+    else
+    {
+        printf("unknown > ");
+    }
+}
+
+void	prompt_loop_sub(char *line, char **token)
+{
+	t_cap	*head;
+	t_cmd	*current;
+	size_t	i;
+
+	token = split_tokens(line);
+	if (all_checks(token))
+		remove_quotes(token);
+	head = parsing(token);
+	printf("There are %d tok in the following command\n", head->tok);
+	current = head->next;
+	while (current)
+	{
+		i = 0;
+		while (current->argv[i])
+			printf("argv = %s\n", current->argv[i++]);
+		printf("infile = %s\n", current->infile);
+		printf("outfile = %s\n", current->outfile);
+		printf("append = %d and heredoc = %d\n", current->append, current->heredoc);
+		current = current->next;
+	}
+	free_head_nodes(head);
+	i = 0;
+	while (token[++i]);
+	free_tokens(token, i - 1);
 }
 
 void	prompt_loop(char **envp)
 {
 	char	*line;
+	char	*origin;
+	char	**token;
 	(void)envp;
 
 	write_prompt();
@@ -28,19 +73,22 @@ void	prompt_loop(char **envp)
 	{
 		if (*line)
 		{
-			printf("%s\n", line);
+			token = NULL;
+			origin = line;
+			prompt_loop_sub(line, token);
 		}
-		free(line);
+		free(origin);
+		origin = NULL;
 		write_prompt();
 		line = readline("");
 	}
 }
 
-int	main(int argc, char **argv, char **envp)
+/*int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
 
 	prompt_loop(envp);
 	return (0);
-}	
+}*/	

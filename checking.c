@@ -1,8 +1,9 @@
+#include "minishell.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-int     ft_strcmp(char *s1, char *s2)
+static int     ft_strcmp(char *s1, char *s2)
 {
 	while (*s1 && (*s1 == *s2))
 	{
@@ -30,7 +31,7 @@ int		check_pipes(char **token)
 	return (1);
 }
 
-int		is_redir(char c)
+static int		is_redir(char c)
 {
 	return (c == '>' || c == '<');
 }
@@ -129,7 +130,7 @@ void	remove_quotes(char **argv)
 	}
 }
 
-char	*ft_strdup(const char *s)
+/*static char	*ft_strdup(const char *s)
 {
 	char	*dup;
 	int		len;
@@ -148,10 +149,10 @@ char	*ft_strdup(const char *s)
 		++i;
 	}
 	return (dup);
-}
+}*/
 
 
-int		main(void)
+/*int		main(void)
 {
 	const char	*orig[] = {"\"echo\"", "ab\"cd\"'ef'", 'Je suis une ''*'\"", "'>'", "\"outfile.txt\"", NULL};
 	char	*token[10];
@@ -178,4 +179,4 @@ int		main(void)
 	while (token[i])
 	    free(token[i++]);	
 	return (0);
-}
+}*/
