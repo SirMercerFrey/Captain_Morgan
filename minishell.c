@@ -39,8 +39,9 @@ void	prompt_loop_sub(char *line, char **token)
 	size_t	i;
 
 	token = split_tokens(line);
-	if (all_checks(token))
-		remove_quotes(token);
+	if (!all_checks(token))
+		return (exit_syntax(token), (void)0);
+	remove_quotes(token);
 	head = parsing(token);
 	printf("There are %d tok in the following command\n", head->tok);
 	current = head->next;

@@ -89,6 +89,32 @@ int		all_checks(char **token)
 	return (1);
 }
 
+static size_t	ft_strlen(char *str)
+{
+	char	*end;
+
+	if (!str)
+		return (0);
+	end = str;
+	while (*end)
+		++end;
+	return (end - str);
+}
+
+void	exit_syntax(char **token)
+{
+	int		i;
+//	char	*red;
+
+//	red = "\033[0;31m";
+//	write(2, red, ft_strlen(red));
+	write(2, "Syntax error.\n", ft_strlen("Syntax error.\n"));
+//	write(2, red, ft_strlen(red));
+	i = 0;
+	while (token[++i]);
+	free_tokens(token, i - 1);
+}
+
 void	remove_outer_quotes_inplace(char *str)
 {
 	int		in_single_quote;

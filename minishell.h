@@ -26,6 +26,7 @@ int		check_pipes(char **token);
 int		check_redirections(char **token);
 int		check_quotes(char **token);
 int		all_checks(char **token);
+void	exit_syntax(char **token);
 void	remove_outer_quotes_inplace(char *str);
 void	remove_quotes(char **argv);
 
