@@ -36,6 +36,7 @@ void	prompt_loop_sub(char *line, char **token)
 {
 	t_cap	*head;
 	t_cmd	*current;
+	t_rdr	*tmp;
 	size_t	i;
 
 	token = split_tokens(line);
@@ -50,9 +51,14 @@ void	prompt_loop_sub(char *line, char **token)
 		i = 0;
 		while (current->argv[i])
 			printf("argv = %s\n", current->argv[i++]);
-		printf("infile = %s\n", current->infile);
-		printf("outfile = %s\n", current->outfile);
-		printf("append = %d and heredoc = %d\n", current->append, current->heredoc);
+		printf("path = %s\n", current->cmd_path);
+		tmp = current->redirs;
+		while (tmp)
+		{
+			printf("\tfilename = %s\n", tmp->filename);
+			printf("\ttype = %d\n", tmp->type);
+			tmp = tmp->next;
+		}
 		current = current->next;
 	}
 	free_head_nodes(head);

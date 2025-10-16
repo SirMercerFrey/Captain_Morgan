@@ -3,23 +3,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
-/*typedef struct	s_cmd
+t_rdr	*create_redir(void)
 {
-	char			**argv;
-	char			*infile;
-	char			*outfile;
-	int				append;
-	int				heredoc;
-	struct s_cmd	*next;
-} t_cmd;
+	t_rdr	*new_redir;
 
-typedef struct s_cap
-{
-	int				tok;
-	struct s_cmd	*next;
-} t_cap;*/
-
+	new_redir = (t_rdr *)(malloc(sizeof(t_rdr)));
+	if (!new_redir)
+		return (NULL);
+	new_redir->type = 42;
+	new_redir->filename = NULL;
+	new_redir->next = NULL;
+	return (new_redir);
+}
+	
 t_cmd	*create_node(void)
 {
 	t_cmd	*new_node;
@@ -28,10 +24,8 @@ t_cmd	*create_node(void)
 	if (!new_node)
 		return (NULL);
 	new_node->argv = NULL;
-	new_node->infile = NULL;
-	new_node->outfile = NULL;
-	new_node->append = 0;
-	new_node->heredoc = 0;
+	new_node->cmd_path = NULL;
+	new_node->redirs = NULL;
 	new_node->next = NULL;
 	return (new_node);
 }
@@ -79,6 +73,21 @@ static char	*ft_strdup(const char *s)
 	return (dup);
 }
 
+static int	is_redir(char *str)
+{
+	if (!str)
+		return (0);
+	if (!ft_strcmp(str, "<"))
+		return (1);
+	if (!ft_strcmp(str, ">"))
+		return (1);
+	if (!ft_strcmp(str, "<<"))
+		return (1);
+	if (!ft_strcmp(str, ">>"))
+		return (1);
+	return (0);
+}
+
 void	add_arg(char ***argv, char *word)
 {
 	size_t	count;
@@ -101,6 +110,32 @@ void	add_arg(char ***argv, char *word)
 	*argv = new_argv;
 }
 
+void	handle_direction(char **token, t_cmd *node, int *n)
+{
+	t_rdr	*new;
+	t_rdr	*tmp;
+
+	new = create_redir();
+	tmp = node->redirs;
+	if (tmp)
+	{
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = new;
+	}
+	else
+		node->redirs = new;
+	if (!ft_strcmp(token[*n], "<"))
+		new->type = 0;
+	else if (!ft_strcmp(token[*n], ">"))
+		new->type = 1;
+	else if (!ft_strcmp(token[*n], "<<"))
+		new->type = 2;
+	else if (!ft_strcmp(token[*n], ">>"))
+		new->type = 3;
+	new->filename = ft_strdup(token[++*n]);
+}
+
 void	parsing_loop(char **token, t_cmd *node, int *n)
 {
 	t_cmd	*new;
@@ -113,16 +148,8 @@ void	parsing_loop(char **token, t_cmd *node, int *n)
 			node->next = new;
 			node = new;
 		}
-		else if (!ft_strcmp(token[*n], "<") || !ft_strcmp(token[*n], "<<"))	
-		{
-			node->heredoc = (token[*n][1] == '<');
-			node->infile = ft_strdup(token[++*n]);
-		}
-		else if (!ft_strcmp(token[*n], ">") || !ft_strcmp(token[*n], ">>"))	
-		{
-			node->append = (token[*n][1] == '>');
-			node->outfile = ft_strdup(token[++*n]);
-		}
+		else if (is_redir(token[*n])) 
+			handle_direction(token, node, n);
 		else
 			add_arg(&node->argv, token[*n]);
 		++*n;
@@ -152,10 +179,24 @@ t_cap *parsing(char **token)
 	return (head);
 }
 
+void	free_redirs(t_rdr *tmp)
+{
+	t_rdr	*prev;
+
+	while (tmp)
+	{
+		free(tmp->filename);
+		prev = tmp;
+		tmp = tmp->next;
+		free(prev);
+	}
+}
+
 void	free_head_nodes(t_cap *head)
 {
 	t_cmd	*current;
 	t_cmd	*previous;
+	t_rdr	*tmp;
 	size_t	i;
 
 	current = head->next;
@@ -165,8 +206,9 @@ void	free_head_nodes(t_cap *head)
 		while (current->argv[i])
 			free(current->argv[i++]);
 		free(current->argv);
-		free(current->infile);
-		free(current->outfile);
+		free(current->cmd_path);
+		tmp = current->redirs;
+		free_redirs(tmp);
 		previous = current;
 		current = current->next;
 		free(previous);

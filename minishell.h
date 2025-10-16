@@ -6,13 +6,18 @@
 # include <stdlib.h>
 # include <unistd.h> 
 
+typedef struct	s_rdr
+{
+	int				type; // < = 0; > = 1; << = 2; >> = 3
+	char			*filename;
+	struct s_rdr	*next;
+} t_rdr;
+	
 typedef struct	s_cmd
 {
 	char			**argv;
-	char			*infile;
-	char			*outfile;
-	int				append;
-	int				heredoc;
+	char			*cmd_path;
+	struct s_rdr	*redirs;
 	struct s_cmd	*next;
 } t_cmd;
 
