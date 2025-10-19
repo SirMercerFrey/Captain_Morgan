@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	*ft_strdup(const char *s)
+/*static char	*ft_strdup(const char *s)
 {
 	char	*dup;
 	int		len;
@@ -19,25 +19,25 @@ char	*ft_strdup(const char *s)
 		++i;
 	}
 	return (dup);
-}
+}*/
 
 
-int	ft_isdigit(int c)
+static int	ft_isdigit(int c)
 {
 	return (c >= '0' && c <= '9');
 }
 
-int	ft_isalpha(int c)
+static int	ft_isalpha(int c)
 {
 	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
 }
 
-int	ft_isalnum(int c)
+static int	ft_isalnum(int c)
 {
 	return (ft_isalpha(c) || ft_isdigit(c));
 }
 
-size_t	ft_strlen(char *str)
+static size_t	ft_strlen(char *str)
 {
 	char	*end;
 
@@ -147,15 +147,42 @@ void	put_env_str(char **str)
 	}
 }
 
-int		main(void)
+void	put_env_arg(char **argv)
 {
-	char	str[] = "\"Hello $USER, you 're now at $PWD on the $HOSTNAME machine.\"";
-	char	*s;
+	size_t	i;
 
-	s = ft_strdup(str);
-	printf("Original: %s\n", s);	
-	put_env_str(&s);
-	printf("Final: %s\n", s);
-	free(s);
-	return (0);
+	i = 0;
+	while (argv[i])
+	{
+		put_env_str(&argv[i]);
+		++i;
+	}
 }
+
+/*int		main(void)
+{
+	char	**argv ;
+	char	str2[] = "\"Hello $USER, you 're now at $PWD on the $HOSTNAME machine.\"";
+	char	str[] = "echo";
+	char	str1[] = "-n";
+	size_t	i;
+
+	argv = (char **)(malloc(sizeof(char *) * 4));
+	
+	argv[0] = ft_strdup(str);
+	argv[1] = ft_strdup(str1);
+	argv[2] = ft_strdup(str2);
+	argv[3] = NULL;
+	i = 0;
+	while (argv[i])
+		printf("%s\n", argv[i++]);
+	put_env_arg(argv);
+	i = 0;
+	while (argv[i])
+		printf("%s\n", argv[i++]);
+	i = 0;
+	while (argv[i])
+		free(argv[i++]);
+	free(argv);
+	return (0);
+}*/

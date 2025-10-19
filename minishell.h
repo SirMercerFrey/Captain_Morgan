@@ -51,6 +51,13 @@ void	parsing_loop(char **token, t_cmd *node, int *n);
 t_cap	*parsing(char **token);
 void	free_head_nodes(t_cap *head);
 
+char    *extract_var(char *str);
+char    *write_var(char *str, char *env, size_t i, size_t var_len);
+char    *get_var(char *str, size_t i);
+void    check_var_quotes(char c, int *in_single_quote, int *in_double_quote);
+void    put_env_str(char **str);
+void    put_env_arg(char **argv);
+
 void	print_banner_start(void);
 void	print_banner_end(void);
 
