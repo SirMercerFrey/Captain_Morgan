@@ -49,6 +49,22 @@ static size_t	ft_strlen(char *str)
 	return (end - str);
 }
 
+static int	ft_strncmp(char *s1, char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (n > i)
+	{
+		if ((unsigned char)s1[i] != (unsigned char)s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		if (!s1[i])
+			break ;
+		++i;
+	}
+	return (0);
+}
+
 char	*extract_var(char *str)
 {
 	size_t	len;
@@ -69,6 +85,21 @@ char	*extract_var(char *str)
 	var[i] = '\0';
 	return (var);
 }
+
+char	*ft_getenv(char *var, size_t var_len, char **envp)
+{
+	size_t	i;
+
+	i = 0;
+	while (envp[i])
+	{
+		if (!ft_strncmp(envp[i], var, var_len) && envp[i][var_len] == '=')
+			return (envp[i] + var_len + 1);
+		++i;
+	}
+	return (NULL);
+}
+
 
 char	*write_var(char *str, char *env, size_t i, size_t var_len)
 {
@@ -95,7 +126,7 @@ char	*write_var(char *str, char *env, size_t i, size_t var_len)
 	return (new_str);
 }
 
-char	*get_var(char *str, size_t i)
+char	*get_var(char *str, size_t i, char **envp)
 {
 	char	*new_str;
 	char	*var;
@@ -104,7 +135,7 @@ char	*get_var(char *str, size_t i)
 
 	var = extract_var(str + i);
 	var_len = ft_strlen(var);
-	env = getenv(var);
+	env = ft_getenv(var, var_len, envp);
 	free(var);
 	if (!env)
 		env = "";
@@ -120,7 +151,7 @@ void	check_var_quotes(char c, int *in_single_quote, int *in_double_quote)
 		*in_double_quote = !*in_double_quote;
 }
 
-void	put_env_str(char **str)
+void	put_env_str(char **str, char **envp)
 {
 	char	*new_str;
 	int		in_single_quote;
@@ -135,7 +166,7 @@ void	put_env_str(char **str)
 		check_var_quotes((*str)[i], &in_single_quote, &in_double_quote);
 		if (!in_single_quote && (*str)[i] == '$')
 		{
-			new_str = get_var(*str, i);
+			new_str = get_var(*str, i, envp);
 			free(*str);
 			*str = new_str;
 			i = 0;
@@ -147,14 +178,14 @@ void	put_env_str(char **str)
 	}
 }
 
-void	put_env_arg(char **argv)
+void	put_env_arg(char **argv, char **envp)
 {
 	size_t	i;
 
 	i = 0;
 	while (argv[i])
 	{
-		put_env_str(&argv[i]);
+		put_env_str(&argv[i], envp);
 		++i;
 	}
 }

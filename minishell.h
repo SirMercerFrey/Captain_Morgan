@@ -41,7 +41,7 @@ void	free_tokens(char **token, int i);
 char	**split_tokens(char *line);
 
 void	write_prompt(void);
-void	prompt_loop_sub(char *line, char **token);
+void	prompt_loop_sub(char *line, char **token, char **envp);
 void	prompt_loop(char **envp);
 
 t_cmd	*create_node(void);
@@ -52,11 +52,12 @@ t_cap	*parsing(char **token);
 void	free_head_nodes(t_cap *head);
 
 char    *extract_var(char *str);
+char	*ft_getenv(char *var, size_t var_len, char **envp);
 char    *write_var(char *str, char *env, size_t i, size_t var_len);
-char    *get_var(char *str, size_t i);
+char    *get_var(char *str, size_t i, char **envp);
 void    check_var_quotes(char c, int *in_single_quote, int *in_double_quote);
-void    put_env_str(char **str);
-void    put_env_arg(char **argv);
+void    put_env_str(char **str, char **envp);
+void    put_env_arg(char **argv, char **envp);
 
 void	print_banner_start(void);
 void	print_banner_end(void);

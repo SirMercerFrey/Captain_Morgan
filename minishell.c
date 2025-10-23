@@ -32,7 +32,7 @@ void write_prompt(void)
     }
 }
 
-void	prompt_loop_sub(char *line, char **token)
+void	prompt_loop_sub(char *line, char **token, char **envp)
 {
 	t_cap	*head;
 	t_cmd	*current;
@@ -42,7 +42,7 @@ void	prompt_loop_sub(char *line, char **token)
 	token = split_tokens(line);
 	if (!all_checks(token))
 		return (exit_syntax(token), (void)0);
-	put_env_arg(token);
+	put_env_arg(token, envp);
 	remove_quotes(token);
 	head = parsing(token);
 	printf("There are %d tok in the following command\n", head->tok);
@@ -73,7 +73,6 @@ void	prompt_loop(char **envp)
 	char	*line;
 	char	*origin;
 	char	**token;
-	(void)envp;
 
 	write_prompt();
 	line = readline("");
@@ -83,7 +82,7 @@ void	prompt_loop(char **envp)
 		{
 			token = NULL;
 			origin = line;
-			prompt_loop_sub(line, token);
+			prompt_loop_sub(line, token, envp);
 		}
 		free(origin);
 		origin = NULL;
