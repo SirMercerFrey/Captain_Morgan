@@ -18,17 +18,94 @@
 		write(1, "unknown > ", 10);
 }*/
 
-void write_prompt(void)
+size_t	ft_strlen(const char *str)
 {
-    char cwd[PATH_MAX];
+	const char	*end;
 
-    if (getcwd(cwd, sizeof(cwd)) != NULL)
+	if (!str)
+		return (0);
+	end = str;
+	while (*end)
+		++end;
+	return (end - str);
+}
+
+static size_t	ft_strlcat(char *dest, const char *src, size_t size)
+{
+	size_t	dlen;
+	size_t	slen;
+	size_t	i;
+
+	dlen = 0;
+	while (dest[dlen] && dlen < size)
+		++dlen;
+	slen = 0;
+	while (src[slen])
+		++slen;
+	if (dlen >= size)
+		return (size + slen);
+	i = 0;
+	while (src[i] && dlen + i < size -1)
+	{
+		dest[dlen + i] = src[i];
+		++i;
+	}
+	dest[dlen + i] = '\0';
+	return (dlen + slen);
+}
+
+static size_t	ft_strlcpy(char *dest, const char *src, size_t size)
+{
+	size_t	len;
+	size_t	i;
+
+	len = 0;
+	while (src[len])
+		++len;
+	i = 0;
+	if (size)
+	{
+		while (src[i] && i < size - 1)
+		{
+			dest[i] = src[i];
+			++i;
+		}
+		dest[i] = '\0';
+	}
+	return (len);
+}
+
+static char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*strjoin;
+	size_t	len;
+
+	len = ft_strlen(s1) + ft_strlen(s2);
+	strjoin = (char *)(malloc(sizeof(char) * (len + 1)));
+	if (!strjoin)
+		return (NULL);
+	ft_strlcpy(strjoin, s1, len + 1);
+	ft_strlcat(strjoin, s2, len + 1);
+	return (strjoin);
+}
+
+char	*get_prompt(void)
+{
+    char 	*cwd;
+	char	*prompt;
+
+	cwd = NULL;
+    cwd = getcwd(NULL, 0); 
+	if (cwd != NULL)
     {
-        printf("%s > ", cwd);
+		prompt = ft_strjoin(cwd, " > ");
+		free(cwd);
+		return (prompt);
     }
     else
     {
         printf("unknown > ");
+		return (NULL);
     }
 }
 
@@ -73,9 +150,10 @@ void	prompt_loop(char **envp)
 	char	*line;
 	char	*origin;
 	char	**token;
+	char	*prompt;
 
-	write_prompt();
-	line = readline("");
+	prompt = get_prompt();
+	line = readline(prompt);
 	while (line != NULL)
 	{
 		if (*line)
@@ -86,8 +164,9 @@ void	prompt_loop(char **envp)
 		}
 		free(origin);
 		origin = NULL;
-		write_prompt();
-		line = readline("");
+		free(prompt);
+		prompt = get_prompt();
+		line = readline(prompt);
 	}
 }
 

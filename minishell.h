@@ -40,7 +40,7 @@ char	*extract_token(char **line);
 void	free_tokens(char **token, int i);
 char	**split_tokens(char *line);
 
-void	write_prompt(void);
+char	*get_prompt(void);
 void	prompt_loop_sub(char *line, char **token, char **envp);
 void	prompt_loop(char **envp);
 

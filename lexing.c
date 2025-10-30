@@ -98,6 +98,8 @@ char	**split_tokens(char *line)
 			free_tokens(token, i - 1);
 			return (NULL);
 		}
+		while (*line && spaces(*line))
+			++line;
 		++i;
 	}
 	token[i] = NULL;
