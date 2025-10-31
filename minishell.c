@@ -168,6 +168,7 @@ void	prompt_loop(t_shell *minishell)
 		prompt = get_prompt();
 		line = readline(prompt);
 	}
+	free(prompt);
 }
 
 /*int	main(int argc, char **argv, char **envp)
