@@ -109,20 +109,22 @@ char	*get_prompt(void)
     }
 }
 
-void	prompt_loop_sub(char *line, char **token, char **envp)
+void	prompt_loop_sub(char *line, t_shell *minishell)
 {
 	t_cap	*head;
 	t_cmd	*current;
 	t_rdr	*tmp;
+	char	**token;
 	size_t	i;
 
 	token = split_tokens(line);
 	if (!all_checks(token))
 		return (exit_syntax(token), (void)0);
-	put_env_arg(token, envp);
+	put_env_arg(token, minishell->envp);
 	remove_quotes(token);
 	head = parsing(token);
 	printf("There are %d tok in the following command\n", head->tok);
+	minishell->cap = head;
 	current = head->next;
 	while (current)
 	{
@@ -145,11 +147,10 @@ void	prompt_loop_sub(char *line, char **token, char **envp)
 	free_tokens(token, i - 1);
 }
 
-void	prompt_loop(char **envp)
+void	prompt_loop(t_shell *minishell)
 {
 	char	*line;
 	char	*origin;
-	char	**token;
 	char	*prompt;
 
 	prompt = get_prompt();
@@ -158,9 +159,8 @@ void	prompt_loop(char **envp)
 	{
 		if (*line)
 		{
-			token = NULL;
 			origin = line;
-			prompt_loop_sub(line, token, envp);
+			prompt_loop_sub(line, minishell);
 		}
 		free(origin);
 		origin = NULL;

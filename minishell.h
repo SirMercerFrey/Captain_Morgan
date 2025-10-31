@@ -27,6 +27,15 @@ typedef struct	s_cap
 	struct s_cmd	*next;
 } t_cap;
 
+typedef struct	s_shell
+{
+	t_cap			*cap;
+	char			**envp;
+	int				exit_status;
+} t_shell;
+
+t_shell	*create_shell(char **envp);
+
 int		check_pipes(char **token);
 int		check_redirections(char **token);
 int		check_quotes(char **token);
@@ -41,8 +50,8 @@ void	free_tokens(char **token, int i);
 char	**split_tokens(char *line);
 
 char	*get_prompt(void);
-void	prompt_loop_sub(char *line, char **token, char **envp);
-void	prompt_loop(char **envp);
+void	prompt_loop_sub(char *line, t_shell *shell);
+void	prompt_loop(t_shell *shell);
 
 t_cmd	*create_node(void);
 t_cap	*create_head(void);
