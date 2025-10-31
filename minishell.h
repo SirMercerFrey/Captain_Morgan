@@ -35,6 +35,9 @@ typedef struct	s_shell
 } t_shell;
 
 t_shell	*create_shell(char **envp);
+void    free_shell(t_shell *shell);
+char    **copy_envp(char **envp);
+size_t  envp_len(char **envp);
 
 int		check_pipes(char **token);
 int		check_redirections(char **token);
