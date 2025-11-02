@@ -161,9 +161,11 @@ void	prompt_loop(t_shell *minishell)
 		{
 			origin = line;
 			prompt_loop_sub(line, minishell);
+			free(origin);
+			origin = NULL;
 		}
-		free(origin);
-		origin = NULL;
+		else
+			free(line);
 		free(prompt);
 		prompt = get_prompt();
 		line = readline(prompt);
